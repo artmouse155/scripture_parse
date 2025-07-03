@@ -4,7 +4,7 @@ SCRIPTURE GRAMMAR
 <fileItem>::= <scriptureRef> | not(<scriptureRef> or END)
 <fileItemList>::= <fileItem> <fileItemList> | lambda
 
-<scriptureRef> ::= BOOK <chapterRef> <chapterRefList>
+<scriptureRef> ::= <book> <chapterRef> <chapterRefList>
 
 <chapterRef>::= NUMBER <chapterEnd>
 <chapterEnd>::= <chapterVerseEnd> | <chapterRangeEnd> | lambda
@@ -19,3 +19,80 @@ SCRIPTURE GRAMMAR
 <verseRangeEnd>::= DASH NUMBER
 
 <verseRefList>::= COMMA <verseRef> <verseRefList> | lambda
+
+<book>::=
+    <bookNum> <bookName> |
+    <bookName>
+
+# Change this so we can't access 4 Kings
+<bookNum>::= "1"|"2"|"3"|"4"
+<bookName>::=
+    <abbr> PERIOD           |
+    <BN1>                   |
+    <BN2>                   |
+    <BN3>                   |
+    <BN4>                   |
+
+<abbr>::=
+    "Chr"
+    "Cor"
+    "Jn"
+    "Kgs"
+    
+    	1 Chr.
+	1 Cor.
+	1 Jn.
+	1 Kgs.
+	1 Ne.
+	1 Pet.
+	1 Sam.
+	1 Thes.
+	1 Tim.
+	2 Chr.
+	2 Cor.
+	2 Jn.
+	2 Kgs.
+	2 Ne.
+	2 Pet.
+	2 Sam.
+	2 Thes.
+	2 Tim.
+	3 Jn.
+	3 Ne.
+	4 Ne.
+	Abr.
+	Col.
+	Dan.
+	Deut.
+	Eccl.
+	Eph.
+	Esth.
+	Ex.
+	Ezek.
+	Gal.
+	Gen.
+	Hab.
+	Hag.
+	Heb.
+	Hel.
+	Isa.
+	Jer.
+	Josh.
+	Judg.
+	Lam.
+	Lev.
+	Mal.
+	Matt.
+	Morm.
+	Moro.
+	Neh.
+	Num.
+	Obad.
+	Philem.
+	Philip.
+	Prov.
+	Ps.
+	Rev.
+	Rom.
+	Zech.
+	Zeph.

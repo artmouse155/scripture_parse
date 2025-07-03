@@ -6,7 +6,9 @@ class TokenType(Enum):
     DASH = "DASH",
     COLON = "COLON"
     SEMICOLON = "SEMICOLON"
-    BOOK = "BOOK",
+    PERIOD = "PERIOD"
+    AMPERSAND = "AMPERSAND"
+    WORD = "WORD",
     NUMBER = "NUMBER",
     UNDEFINED = "UNDEFINED"
     END = "END"
@@ -64,6 +66,10 @@ class Scanner:
                     tokens.append(Token(TokenType.COLON, t))
                 case ";":
                     tokens.append(Token(TokenType.SEMICOLON, t))
+                case ".":
+                    tokens.append(Token(TokenType.PERIOD, t))
+                case "&":
+                    tokens.append(Token(TokenType.AMPERSAND, t))
                 case _:
                     # See if it is a word or number
                     if t.isalpha():
@@ -72,7 +78,7 @@ class Scanner:
                             t = self.advanceToken()
                             word += t
                             
-                        tokens.append(Token(TokenType.BOOK, word))
+                        tokens.append(Token(TokenType.WORD, word))
                     
                     elif(not self.isEOF() and self.peekNextToken().isnumeric()):
                         number = t
