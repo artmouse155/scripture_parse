@@ -1,0 +1,21 @@
+SCRIPTURE GRAMMAR
+<file>::= <fileItemList> END
+
+<fileItem>::= <scriptureRef> | not(<scriptureRef> or END)
+<fileItemList>::= <fileItem> <fileItemList> | lambda
+
+<scriptureRef> ::= BOOK <chapterRef> <chapterRefList>
+
+<chapterRef>::= NUMBER <chapterEnd>
+<chapterEnd>::= <chapterVerseEnd> | <chapterRangeEnd> | lambda
+<chapterVerseEnd>::= COLON <verseRef> <verseRefList>
+<chapterRangeEnd>::= DASH NUMBER
+
+
+<chapterRefList> ::= SEMICOLON <chapterRef> <chapterRefList> | lambda
+
+<verseRef>::= NUMBER <verseEnd>
+<verseEnd>::= <verseRangeEnd> | lambda
+<verseRangeEnd>::= DASH NUMBER
+
+<verseRefList>::= COMMA <verseRef> <verseRefList> | lambda
