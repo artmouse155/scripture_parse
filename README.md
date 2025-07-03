@@ -1,2 +1,2 @@
-# scripture_parse
-A scanner and parser for scripture references
+# Scripture Parse
+A scanner and parser for scripture references.
