@@ -10,7 +10,7 @@
 
 <rhsItem> ::= <symbol> <symbolList>.
 
-<symbol> ::= NON_TERMINAL | TERMINAL | LAMBDA.
+<symbol> ::= NON_TERMINAL | TERMINAL | STRING | LAMBDA.
 
 <symbolList> ::= <symbol> <symbolList> | lambda.
 
