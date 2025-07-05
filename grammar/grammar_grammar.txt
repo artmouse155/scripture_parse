@@ -14,4 +14,4 @@
 
 <symbolList> ::= <symbol> <symbolList> | lambda.
 
-<rhsItemList> ::= OR <rhsItem> <rhsItemList>.
+<rhsItemList> ::= OR <rhsItem> <rhsItemList> | lambda.

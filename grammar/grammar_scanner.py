@@ -84,8 +84,8 @@ class Scanner:
                         tokens.append(Token(TokenType.UNDEFINED, word))
                     else:
                         t = self.advanceToken()
-                        word += t
-                        tokens.append(Token(TokenType.COMMENT, word))
+                        # Don't sent comments to the parser
+                        # tokens.append(Token(TokenType.COMMENT, word))
                 case "<":
                     word = t
 
@@ -115,7 +115,7 @@ class Scanner:
                     # See if it is a word or number
                     if t.isalpha() and t.isupper():
                         word = t
-                        while (not self.isEOF() and ((self.peekNextToken().isalpha() and self.peekNextToken().isupper()) or self.peekNextToken().isnumeric())):
+                        while (not self.isEOF() and ((self.peekNextToken().isalpha() and self.peekNextToken().isupper()) or self.peekNextToken().isnumeric() or self.peekNextToken() == "_")):
                             t = self.advanceToken()
                             word += t
                             
