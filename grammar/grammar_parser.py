@@ -1,4 +1,5 @@
 from grammar_scanner import Token, TokenType 
+from grammar_structure import Database
 
 class Id:
 
@@ -22,6 +23,7 @@ class Production:
     def __str__(self):
         out = self.name + " ::=\n  " + " |\n  ".join([" ".join([y.value for y in x]) for x in self.rhs]) + ".\n"
         return out
+
 
 class Parser:
 
