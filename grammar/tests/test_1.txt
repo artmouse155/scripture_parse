@@ -1,0 +1,13 @@
+# SENTENCE GRAMMAR
+
+<sentence> ::= <noun> <verbStmt>.
+
+<noun> ::= "James" | "Cow" | "Pizza".
+
+<verbStmt> ::= <verb> <verbStmtEnd>.
+
+<verbStmtEnd> ::= <adverb> | lambda.
+
+<verb> ::= "eats" | "runs" | "codes".
+
+<adverb> ::= "quickly" | "angrily" | "slowly".

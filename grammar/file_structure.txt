@@ -1,3 +1,17 @@
-file : list[code_block] = []
+file: list[statement]
 
-assignment extends code_block = 
+STATMENTS
+import: (from : str, import : str)
+
+def: (name : str, arguments : list[str], statements : list[statement])
+
+# String statement, such as "x = x+1". Is NOT indented. Even if the sstr contains many statements, none of them are indented.
+sstr: (value: str)
+
+if_elif_else (conditions : list[string], body: list[list[statement]], else: statement)
+
+match (input : str, conditions : list[statement], body: list[statement], default: statement)
+
+null_statement ()
+
+use write_line(line : str), increment_indent, decrement_indent

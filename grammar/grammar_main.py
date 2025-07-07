@@ -8,7 +8,8 @@ assert (len(argv) > 1), "Put the filename of the file you would like to parse as
 s = Scanner(argv[1])
 tokens = s.scan()
 p = Parser(tokens)
-productions = p.parse()
-i = Interpreter(productions)
-with open("output.txt", "w") as out_file:
-    out_file.write(i.interpret())
+database = p.parse()
+i = Interpreter(database)
+print(i.interpret())
+# with open("output.py", "w") as out_file:
+#     out_file.write(i.interpret())
