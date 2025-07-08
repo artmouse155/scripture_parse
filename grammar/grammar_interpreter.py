@@ -49,7 +49,7 @@ class Interpreter:
                 if (len(first) == 0 and len(tokens) == 1 and tokens[0].type == TokenType.LAMBDA):
                     else_stmt : Statement = Sstr("pass # lambda")
                 else:
-                    conditions.append(" or ".join(["expect(" + ("TokenType." if x.type == TokenType.NON_TERMINAL else "") + x.value + ")" for x in first]))
+                    conditions.append(" or ".join(["expect(" + ("TokenType." if (x.type == TokenType.TERMINAL) else "") + x.value + ")" for x in first]))
                     inner_body : list[Statement] = []
                     for token in tokens:
                         

@@ -2,8 +2,7 @@
 
 <file>::= <fileItemList> END.
 
-<fileItem>::= <scriptureRef> | not(<scriptureRef> or END)
-
+<fileItem>::= <scriptureRef> | AMPERSAND | SEMICOLON | DASH | END | NUMBER | PERIOD | COLON | COMMA | UNDEFINED.
 
 <fileItemList>::= <fileItem> <fileItemList> | lambda.
 
@@ -33,23 +32,23 @@
 <joseph>::= "History" | "Matthew".
 
 <NN12>::=
-	"Chr" PERIOD
-	"Cor" PERIOD
-	"Jn" PERIOD
-	"Kgs" PERIOD
-	"Ne" PERIOD
-	"Pet" PERIOD
-	"Sam" PERIOD
-	"Thes" PERIOD
-	"Tim" PERIOD
-	"Chronicles"
-	"Corinthians"
-	"John"
-	"Kings"
-	Nephi
-	"Peter"
-	"Samuel"
-	"Thessalonians"
+	"Chr" PERIOD|
+	"Cor" PERIOD|
+	"Jn" PERIOD|
+	"Kgs" PERIOD|
+	"Ne" PERIOD|
+	"Pet" PERIOD|
+	"Sam" PERIOD|
+	"Thes" PERIOD|
+	"Tim" PERIOD|
+	"Chronicles"|
+	"Corinthians"|
+	"John"|
+	"Kings"|
+	"Nephi"|
+	"Peter"|
+	"Samuel"|
+	"Thessalonians"|
 	"Timothy".
 
 <NN3>::=
