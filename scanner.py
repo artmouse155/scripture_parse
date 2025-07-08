@@ -80,7 +80,7 @@ class Scanner:
                             
                         tokens.append(Token(TokenType.WORD, word))
                     
-                    elif(not self.isEOF() and self.peekNextToken().isnumeric()):
+                    elif(not self.isEOF() and t.isnumeric()):
                         number = t
                         while self.peekNextToken().isnumeric():
                             t = self.advanceToken()

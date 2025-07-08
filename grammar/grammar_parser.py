@@ -82,7 +82,10 @@ class Database:
 
 class Parser:
 
-    tokens : list[Token] = []
+    tokens : list[Token]
+
+    def __init__(self, tokens : list[Token]):
+        self.tokens = tokens
 
     def advanceToken(self) -> Token:
         out : Token = self.tokens[0]
@@ -103,10 +106,7 @@ class Parser:
     
     def expect(self, t : TokenType) -> bool:
         return self.tokens[0].token_type == t
-    
-    def __init__(self, tokens : list):
-        self.tokens = tokens
-        
+
         
     def parse(self) -> Database:
 

@@ -1,32 +1,105 @@
-from enum import Enum
+from scanner import TokenType, Token
 
-class TokenType(Enum):
+class VerseRef:
+
+	first : int
+
+	def __init__(self, first : int) -> None:
+		self.first = first
+
+	def __str__(self) -> str:
+		return str(self.first)
+
+class VerseRangeRef(VerseRef):
+
+	last : int
+
+	def __init__(self, first: int, last: int) -> None:
+		self.last = last
+		super().__init__(first)
+
+	def __str__(self) -> str:
+		return super().__str__() + "-" + str(self.last)
+
+class ChapterRef:
+
+	first : int
+
+	def __init__(self, first : int) -> None:
+		self.first = first
+
+	def __str__(self) -> str:
+		return str(self.first)
+
+class ChapterRangeRef(ChapterRef):
+
+	last : int
+
+	def __init__(self, first : int, last : int) -> None:
+		self.last = last
+		super().__init__(first)
+
+	def __str__(self) -> str:
+		return super().__str__() + "-" + str(self.last)
+
+class ChapterVerseRef(ChapterRef):
+
+	verseRefs : list[VerseRef]
+
+	def __init__(self, first: int, verseRefs : list[VerseRef]) -> None:
+		self.verseRefs = verseRefs
+		super().__init__(first)
+
+	def __str__(self) -> str:
+		return super().__str__() + ":" + ", ".join([str(verseRef) for verseRef in self.verseRefs])
+
+class ScriptureRef:
 	
-	SEMICOLON = "SEMICOLON"
-	COMMA = "COMMA"
-	AMPERSAND = "AMPERSAND"
-	COLON = "COLON"
-	DASH = "DASH"
-	UNDEFINED = "UNDEFINED"
-	PERIOD = "PERIOD"
-	END = "END"
-	NUMBER = "NUMBER"
+	book : str
+	chapterRefs : list[ChapterRef]
+
+	def __init__(self, book : str, chapterRefs : list[ChapterRef]):
+		self.book = book
+		self.chapterRefs = chapterRefs
+
+	def __str__(self) -> str:
+		return self.book + " " + "; ".join([str(chapterRef) for chapterRef in self.chapterRefs])
 
 class Parser:
 	
-	# Implement class variables here...
+	tokens : list[Token]
 	
-	def __init__(self):
-		pass # Implement
+	def __init__(self, tokens : list[Token]):
+		self.tokens = tokens
+
+	def getCurrentToken(self) -> Token:
+		if (len(self.tokens) > 0):
+			return self.tokens[0]
+		else:
+			raise Exception("Parse failed; End of tokens reached.")
+
+	def advanceToken(self):
+		self.tokens = self.tokens[1:]
 	
-	def match(self, t : TokenType | str):
-		pass # Implement
+	def match(self, t : TokenType | str) -> str:
+		if self.expect(t):
+			t = self.getCurrentToken().token_value
+			self.advanceToken()
+			return t
+		else:
+			self.raiseError()
 	
-	def expect(self, t : TokenType | str):
-		pass # Implement
+	def expect(self, t : TokenType | str) -> bool:
+		if (len(self.tokens) == 0):
+			return False
+		if type(t) == TokenType:
+			return self.getCurrentToken().token_type == t
+		if type(t) == str:
+			return self.getCurrentToken().token_value == t
+		return False
 	
 	def raiseError(self):
-		pass # Implement
+		raise Exception(self.getCurrentToken())
 	
 	def parse(self):
 		
@@ -35,11 +108,8 @@ class Parser:
 		raiseError = self.raiseError
 		
 		def file():
-			if expect("1") or expect("2") or expect("3") or expect("4") or expect("JS") or expect("Joseph") or expect("Abraham") or expect("Acts") or expect("Alma") or expect("Amos") or expect("Colossians") or expect("Daniel") or expect("Deuteronomy") or expect("Ecclesiastes") or expect("Enos") or expect("Ephesians") or expect("Esther") or expect("Ether") or expect("Exodus") or expect("Ezekiel") or expect("Ezra") or expect("Galatians") or expect("Genesis") or expect("Habakkuk") or expect("Haggai") or expect("Hebrews") or expect("Helaman") or expect("Hosea") or expect("Isaiah") or expect("Jacob") or expect("James") or expect("Jarom") or expect("Jeremiah") or expect("Job") or expect("Joel") or expect("John") or expect("Jonah") or expect("Joshua") or expect("Jude") or expect("Judges") or expect("Lamentations") or expect("Leviticus") or expect("Luke") or expect("Malachi") or expect("Mark") or expect("Matthew") or expect("Micah") or expect("Mormon") or expect("Moroni") or expect("Moses") or expect("Mosiah") or expect("Nahum") or expect("Nehemiah") or expect("Numbers") or expect("Obadiah") or expect("OD") or expect("Omni") or expect("Philemon") or expect("Philippians") or expect("Proverbs") or expect("Psalms") or expect("Revelation") or expect("Romans") or expect("Ruth") or expect("Song") or expect("Titus") or expect("Zechariah") or expect("Zephaniah") or expect("Abr") or expect("Col") or expect("Dan") or expect("Deut") or expect("Eccl") or expect("Eph") or expect("Esth") or expect("Ex") or expect("Ezek") or expect("Gal") or expect("Gen") or expect("Hab") or expect("Hag") or expect("Heb") or expect("Hel") or expect("Isa") or expect("Jer") or expect("Josh") or expect("Judg") or expect("Lam") or expect("Lev") or expect("Mal") or expect("Matt") or expect("Morm") or expect("Moro") or expect("Neh") or expect("Num") or expect("Obad") or expect("Philem") or expect("Philip") or expect("Prov") or expect("Ps") or expect("Rev") or expect("Rom") or expect("Zech") or expect("Zeph") or expect("Articles") or expect("A") or expect("Doctrine") or expect("Official") or expect("Song") or expect("Words") or expect("W") or expect("D") or expect(TokenType.AMPERSAND) or expect(TokenType.SEMICOLON) or expect(TokenType.DASH) or expect(TokenType.END) or expect(TokenType.NUMBER) or expect(TokenType.PERIOD) or expect(TokenType.COLON) or expect(TokenType.COMMA) or expect(TokenType.UNDEFINED):
-				fileItemList()
-				match(TokenType.END)
-			else:
-				raiseError()
+			fileItemList()
+			match(TokenType.END)
 		
 		def fileItem():
 			if expect("1") or expect("2") or expect("3") or expect("4") or expect("JS") or expect("Joseph") or expect("Abraham") or expect("Acts") or expect("Alma") or expect("Amos") or expect("Colossians") or expect("Daniel") or expect("Deuteronomy") or expect("Ecclesiastes") or expect("Enos") or expect("Ephesians") or expect("Esther") or expect("Ether") or expect("Exodus") or expect("Ezekiel") or expect("Ezra") or expect("Galatians") or expect("Genesis") or expect("Habakkuk") or expect("Haggai") or expect("Hebrews") or expect("Helaman") or expect("Hosea") or expect("Isaiah") or expect("Jacob") or expect("James") or expect("Jarom") or expect("Jeremiah") or expect("Job") or expect("Joel") or expect("John") or expect("Jonah") or expect("Joshua") or expect("Jude") or expect("Judges") or expect("Lamentations") or expect("Leviticus") or expect("Luke") or expect("Malachi") or expect("Mark") or expect("Matthew") or expect("Micah") or expect("Mormon") or expect("Moroni") or expect("Moses") or expect("Mosiah") or expect("Nahum") or expect("Nehemiah") or expect("Numbers") or expect("Obadiah") or expect("OD") or expect("Omni") or expect("Philemon") or expect("Philippians") or expect("Proverbs") or expect("Psalms") or expect("Revelation") or expect("Romans") or expect("Ruth") or expect("Song") or expect("Titus") or expect("Zechariah") or expect("Zephaniah") or expect("Abr") or expect("Col") or expect("Dan") or expect("Deut") or expect("Eccl") or expect("Eph") or expect("Esth") or expect("Ex") or expect("Ezek") or expect("Gal") or expect("Gen") or expect("Hab") or expect("Hag") or expect("Heb") or expect("Hel") or expect("Isa") or expect("Jer") or expect("Josh") or expect("Judg") or expect("Lam") or expect("Lev") or expect("Mal") or expect("Matt") or expect("Morm") or expect("Moro") or expect("Neh") or expect("Num") or expect("Obad") or expect("Philem") or expect("Philip") or expect("Prov") or expect("Ps") or expect("Rev") or expect("Rom") or expect("Zech") or expect("Zeph") or expect("Articles") or expect("A") or expect("Doctrine") or expect("Official") or expect("Song") or expect("Words") or expect("W") or expect("D"):
@@ -60,141 +130,158 @@ class Parser:
 				match(TokenType.COLON)
 			elif expect(TokenType.COMMA):
 				match(TokenType.COMMA)
+			elif expect(TokenType.WORD):
+				match(TokenType.WORD)
 			elif expect(TokenType.UNDEFINED):
 				match(TokenType.UNDEFINED)
 			else:
 				raiseError()
 		
 		def fileItemList():
-			if expect("1") or expect("2") or expect("3") or expect("4") or expect("JS") or expect("Joseph") or expect("Abraham") or expect("Acts") or expect("Alma") or expect("Amos") or expect("Colossians") or expect("Daniel") or expect("Deuteronomy") or expect("Ecclesiastes") or expect("Enos") or expect("Ephesians") or expect("Esther") or expect("Ether") or expect("Exodus") or expect("Ezekiel") or expect("Ezra") or expect("Galatians") or expect("Genesis") or expect("Habakkuk") or expect("Haggai") or expect("Hebrews") or expect("Helaman") or expect("Hosea") or expect("Isaiah") or expect("Jacob") or expect("James") or expect("Jarom") or expect("Jeremiah") or expect("Job") or expect("Joel") or expect("John") or expect("Jonah") or expect("Joshua") or expect("Jude") or expect("Judges") or expect("Lamentations") or expect("Leviticus") or expect("Luke") or expect("Malachi") or expect("Mark") or expect("Matthew") or expect("Micah") or expect("Mormon") or expect("Moroni") or expect("Moses") or expect("Mosiah") or expect("Nahum") or expect("Nehemiah") or expect("Numbers") or expect("Obadiah") or expect("OD") or expect("Omni") or expect("Philemon") or expect("Philippians") or expect("Proverbs") or expect("Psalms") or expect("Revelation") or expect("Romans") or expect("Ruth") or expect("Song") or expect("Titus") or expect("Zechariah") or expect("Zephaniah") or expect("Abr") or expect("Col") or expect("Dan") or expect("Deut") or expect("Eccl") or expect("Eph") or expect("Esth") or expect("Ex") or expect("Ezek") or expect("Gal") or expect("Gen") or expect("Hab") or expect("Hag") or expect("Heb") or expect("Hel") or expect("Isa") or expect("Jer") or expect("Josh") or expect("Judg") or expect("Lam") or expect("Lev") or expect("Mal") or expect("Matt") or expect("Morm") or expect("Moro") or expect("Neh") or expect("Num") or expect("Obad") or expect("Philem") or expect("Philip") or expect("Prov") or expect("Ps") or expect("Rev") or expect("Rom") or expect("Zech") or expect("Zeph") or expect("Articles") or expect("A") or expect("Doctrine") or expect("Official") or expect("Song") or expect("Words") or expect("W") or expect("D") or expect(TokenType.AMPERSAND) or expect(TokenType.SEMICOLON) or expect(TokenType.DASH) or expect(TokenType.END) or expect(TokenType.NUMBER) or expect(TokenType.PERIOD) or expect(TokenType.COLON) or expect(TokenType.COMMA) or expect(TokenType.UNDEFINED):
+			if not expect(TokenType.END):
 				fileItem()
 				fileItemList()
 			else:
 				pass # lambda
 		
 		def scriptureRef():
-			if expect("1") or expect("2") or expect("3") or expect("4") or expect("JS") or expect("Joseph") or expect("Abraham") or expect("Acts") or expect("Alma") or expect("Amos") or expect("Colossians") or expect("Daniel") or expect("Deuteronomy") or expect("Ecclesiastes") or expect("Enos") or expect("Ephesians") or expect("Esther") or expect("Ether") or expect("Exodus") or expect("Ezekiel") or expect("Ezra") or expect("Galatians") or expect("Genesis") or expect("Habakkuk") or expect("Haggai") or expect("Hebrews") or expect("Helaman") or expect("Hosea") or expect("Isaiah") or expect("Jacob") or expect("James") or expect("Jarom") or expect("Jeremiah") or expect("Job") or expect("Joel") or expect("John") or expect("Jonah") or expect("Joshua") or expect("Jude") or expect("Judges") or expect("Lamentations") or expect("Leviticus") or expect("Luke") or expect("Malachi") or expect("Mark") or expect("Matthew") or expect("Micah") or expect("Mormon") or expect("Moroni") or expect("Moses") or expect("Mosiah") or expect("Nahum") or expect("Nehemiah") or expect("Numbers") or expect("Obadiah") or expect("OD") or expect("Omni") or expect("Philemon") or expect("Philippians") or expect("Proverbs") or expect("Psalms") or expect("Revelation") or expect("Romans") or expect("Ruth") or expect("Song") or expect("Titus") or expect("Zechariah") or expect("Zephaniah") or expect("Abr") or expect("Col") or expect("Dan") or expect("Deut") or expect("Eccl") or expect("Eph") or expect("Esth") or expect("Ex") or expect("Ezek") or expect("Gal") or expect("Gen") or expect("Hab") or expect("Hag") or expect("Heb") or expect("Hel") or expect("Isa") or expect("Jer") or expect("Josh") or expect("Judg") or expect("Lam") or expect("Lev") or expect("Mal") or expect("Matt") or expect("Morm") or expect("Moro") or expect("Neh") or expect("Num") or expect("Obad") or expect("Philem") or expect("Philip") or expect("Prov") or expect("Ps") or expect("Rev") or expect("Rom") or expect("Zech") or expect("Zeph") or expect("Articles") or expect("A") or expect("Doctrine") or expect("Official") or expect("Song") or expect("Words") or expect("W") or expect("D"):
-				book()
-				chapterRef()
-				chapterRefList()
-			else:
-				raiseError()
+			nameList : list[str] = []
+			cList : list[ChapterRef] = []
+			try:
+				book(nameList)
+				chapterRef(cList)
+				chapterRefList(cList)
+				s = ScriptureRef(" ".join(nameList), cList)
+				print("⭐",s)
+			except Exception as e:
+				s = ScriptureRef(" ".join(nameList), cList)
+				print("❌", s, e)
 		
-		def chapterRef():
+		def chapterRef(cList : list[ChapterRef]):
 			if expect(TokenType.NUMBER):
-				match(TokenType.NUMBER)
-				chapterEnd()
+				first : str = match(TokenType.NUMBER)
+				chapterEnd(first, cList)
 			else:
 				raiseError()
 		
-		def chapterEnd():
+		def chapterEnd(first : str, cList : list[ChapterRef]):
 			if expect(TokenType.COLON):
-				chapterVerseEnd()
+				vList : list[VerseRef] = []
+				chapterVerseEnd(vList)
+				cList.append(ChapterVerseRef(int(first), vList))
 			elif expect(TokenType.DASH):
-				chapterRangeEnd()
+				last : str = chapterRangeEnd()
+				cList.append(ChapterRangeRef(int(first), int(last)))
 			else:
-				pass # lambda
+				cList.append(ChapterRef(int(first)))
 		
-		def chapterVerseEnd():
+		def chapterVerseEnd(vList : list[VerseRef]):
 			if expect(TokenType.COLON):
 				match(TokenType.COLON)
-				verseRef()
-				verseRefList()
+				verseRef(vList)
+				verseRefList(vList)
 			else:
 				raiseError()
 		
-		def chapterRangeEnd():
+		def chapterRangeEnd() -> str:
 			if expect(TokenType.DASH):
 				match(TokenType.DASH)
-				match(TokenType.NUMBER)
+				last = match(TokenType.NUMBER)
+				return last
 			else:
 				raiseError()
 		
-		def verseRef():
+		def verseRef(vList : list[VerseRef]):
 			if expect(TokenType.NUMBER):
-				match(TokenType.NUMBER)
-				verseEnd()
+				first = match(TokenType.NUMBER)
+				verseEnd(first, vList)
 			else:
 				raiseError()
 		
-		def verseEnd():
+		def verseEnd(first : str, vList : list[VerseRef]):
 			if expect(TokenType.DASH):
-				verseRangeEnd()
+				last : str = verseRangeEnd(first, vList)
+				vList.append(VerseRangeRef(int(first), int(last)))
 			else:
-				pass # lambda
+				vList.append(VerseRef(int(first)))
 		
-		def verseRangeEnd():
+		def verseRangeEnd(first : str, vList : list[VerseRef]) -> str:
 			if expect(TokenType.DASH):
 				match(TokenType.DASH)
-				match(TokenType.NUMBER)
+				last = match(TokenType.NUMBER)
+				return last
 			else:
 				raiseError()
 		
-		def chapterRefList():
+		def chapterRefList(cList : list[ChapterRef]):
 			if expect(TokenType.SEMICOLON):
 				match(TokenType.SEMICOLON)
-				chapterRef()
-				chapterRefList()
+				chapterRef(cList)
+				chapterRefList(cList)
 			else:
 				pass # lambda
 		
-		def verseRefList():
+		def verseRefList(vList : list[VerseRef]):
 			if expect(TokenType.COMMA):
 				match(TokenType.COMMA)
-				verseRef()
-				verseRefList()
+				verseRef(vList)
+				verseRefList(vList)
 			else:
 				pass # lambda
 		
-		def book():
+		def book(nameList : list[str]) -> None:
 			if expect("1") or expect("2") or expect("3") or expect("4"):
-				bookNum()
+				bookNum(nameList)
 			elif expect("JS"):
-				match("JS")
-				match(TokenType.DASH)
-				js()
+				nameList.append(match("JS"))
+				nameList.append(match(TokenType.DASH))
+				js(nameList)
 			elif expect("Joseph"):
-				match("Joseph")
-				match("Smith")
-				joseph()
+				nameList.append(match("Joseph"))
+				nameList.append(match("Smith"))
+				joseph(nameList)
 			elif expect("Abraham") or expect("Acts") or expect("Alma") or expect("Amos") or expect("Colossians") or expect("Daniel") or expect("Deuteronomy") or expect("Ecclesiastes") or expect("Enos") or expect("Ephesians") or expect("Esther") or expect("Ether") or expect("Exodus") or expect("Ezekiel") or expect("Ezra") or expect("Galatians") or expect("Genesis") or expect("Habakkuk") or expect("Haggai") or expect("Hebrews") or expect("Helaman") or expect("Hosea") or expect("Isaiah") or expect("Jacob") or expect("James") or expect("Jarom") or expect("Jeremiah") or expect("Job") or expect("Joel") or expect("John") or expect("Jonah") or expect("Joshua") or expect("Jude") or expect("Judges") or expect("Lamentations") or expect("Leviticus") or expect("Luke") or expect("Malachi") or expect("Mark") or expect("Matthew") or expect("Micah") or expect("Mormon") or expect("Moroni") or expect("Moses") or expect("Mosiah") or expect("Nahum") or expect("Nehemiah") or expect("Numbers") or expect("Obadiah") or expect("OD") or expect("Omni") or expect("Philemon") or expect("Philippians") or expect("Proverbs") or expect("Psalms") or expect("Revelation") or expect("Romans") or expect("Ruth") or expect("Song") or expect("Titus") or expect("Zechariah") or expect("Zephaniah") or expect("Abr") or expect("Col") or expect("Dan") or expect("Deut") or expect("Eccl") or expect("Eph") or expect("Esth") or expect("Ex") or expect("Ezek") or expect("Gal") or expect("Gen") or expect("Hab") or expect("Hag") or expect("Heb") or expect("Hel") or expect("Isa") or expect("Jer") or expect("Josh") or expect("Judg") or expect("Lam") or expect("Lev") or expect("Mal") or expect("Matt") or expect("Morm") or expect("Moro") or expect("Neh") or expect("Num") or expect("Obad") or expect("Philem") or expect("Philip") or expect("Prov") or expect("Ps") or expect("Rev") or expect("Rom") or expect("Zech") or expect("Zeph") or expect("Articles") or expect("A") or expect("Doctrine") or expect("Official") or expect("Song") or expect("Words") or expect("W") or expect("D"):
-				bookName()
+				bookName(nameList, match)
 			else:
 				raiseError()
 		
-		def bookNum():
+		def bookNum(nameList : list[str]):
 			if expect("1"):
-				match("1")
-				NN12()
+				nameList.append(match("1"))
+				NN12(nameList, match)
 			elif expect("2"):
-				match("2")
-				NN12()
+				nameList.append(match("2"))
+				NN12(nameList, match)
 			elif expect("3"):
-				match("3")
-				NN3()
+				nameList.append(match("3"))
+				NN3(nameList, match)
 			elif expect("4"):
-				match("4")
-				NN4()
+				nameList.append(match("4"))
+				NN4(nameList, match)
 			else:
 				raiseError()
 		
-		def js():
+		def js(nameList : list[str]):
 			if expect("H"):
-				match("H")
+				nameList.append(match("H"))
 			elif expect("M"):
-				match("M")
+				nameList.append(match("M"))
 			else:
 				raiseError()
 		
-		def joseph():
+		def joseph(nameList : list[str]):
 			if expect("History"):
-				match("History")
+				nameList.append(match("History"))
 			elif expect("Matthew"):
-				match("Matthew")
+				nameList.append(match("Matthew"))
 			else:
 				raiseError()
 		
-		def NN12():
+		def NN12(nameList : list[str], super_match):
+
+			def match(t : TokenType | str):
+				nameList.append(super_match(t))
+
 			if expect("Chr"):
 				match("Chr")
 				match(TokenType.PERIOD)
@@ -243,7 +330,11 @@ class Parser:
 			else:
 				raiseError()
 		
-		def NN3():
+		def NN3(nameList : list[str], super_match):
+			
+			def match(t : TokenType | str):
+				nameList.append(super_match(t))
+
 			if expect("Jn"):
 				match("Jn")
 				match(TokenType.PERIOD)
@@ -257,7 +348,11 @@ class Parser:
 			else:
 				raiseError()
 		
-		def NN4():
+		def NN4(nameList : list[str], super_match):
+
+			def match(t : TokenType | str):
+				nameList.append(super_match(t))
+
 			if expect("Ne"):
 				match("Ne")
 				match(TokenType.PERIOD)
@@ -266,7 +361,11 @@ class Parser:
 			else:
 				raiseError()
 		
-		def bookName():
+		def bookName(nameList : list[str], super_match):
+
+			def match(t : TokenType | str):
+				nameList.append(super_match(t))
+
 			if expect("Abraham"):
 				match("Abraham")
 			elif expect("Acts"):

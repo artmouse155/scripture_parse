@@ -2,7 +2,7 @@
 
 <file>::= <fileItemList> END.
 
-<fileItem>::= <scriptureRef> | AMPERSAND | SEMICOLON | DASH | END | NUMBER | PERIOD | COLON | COMMA | UNDEFINED.
+<fileItem>::= <scriptureRef> | AMPERSAND | SEMICOLON | DASH | END | NUMBER | PERIOD | COLON | COMMA | WORD | UNDEFINED.
 
 <fileItemList>::= <fileItem> <fileItemList> | lambda.
 
