@@ -162,7 +162,8 @@ class Parser:
 				first : str = match(TokenType.NUMBER)
 				chapterEnd(first, cList)
 			else:
-				raiseError()
+				if (len(cList) == 0):
+					raiseError()
 		
 		def chapterEnd(first : str, cList : list[ChapterRef]):
 			if expect(TokenType.COLON):
@@ -195,8 +196,6 @@ class Parser:
 			if expect(TokenType.NUMBER):
 				first = match(TokenType.NUMBER)
 				verseEnd(first, vList)
-			else:
-				raiseError()
 		
 		def verseEnd(first : str, vList : list[VerseRef]):
 			if expect(TokenType.DASH):
